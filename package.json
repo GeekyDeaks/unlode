@@ -1,0 +1,21 @@
+{
+  "name": "unlode",
+  "version": "1.0.0",
+  "description": "no frills load testing",
+  "directories": {
+    "lib": "lib"
+  },
+  "exports": {
+    ".": "./lib/index.js",
+    "./http": "./lib/http.js"
+  },
+  "scripts": {
+    "test": "tap --no-coverage"
+  },
+  "author": "sdeaks@gmail.com",
+  "license": "ISC",
+  "devDependencies": {
+    "tap": "^16.2.0"
+  },
+  "type": "module"
+}
