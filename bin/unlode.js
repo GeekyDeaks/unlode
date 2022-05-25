@@ -22,7 +22,7 @@ function printStatus(m) {
         'vu.started': m.counters['vu.started'] || 0,
         'vu.completed': m.counters['vu.completed'] || 0,
         'vu.failed': m.counters['vu.failed'] || 0,
-        'vu.running': m.gauges['vu.running']?.value || 0
+        'vu.running': m.measures['vu.running']?.p50
     }
 
     for (const [key, value] of Object.entries(m.counters)) {
@@ -40,30 +40,30 @@ unlode.on('phase.start', (name, phase) => {
 
 unlode.on('phase.end', (name, metrics) => {
     console.log('phase.end %s', name)
-    printStatus(metrics)
+    printStatus(summarise(metrics))
 })
 //unlode.on('error', (name, msg) => console.error(name, msg))
 unlode.on('error', () => {})
 unlode.on('sample', (metrics) => {
     console.log('sample:')
-    printStatus(metrics)
+    printStatus(summarise(metrics))
 })
 
 function summarise(metrics) {
-    let { counters, gauges } = summariseMetrics(metrics)
+    let { counters, measures, rates } = summariseMetrics(metrics)
     // go through all the gauges making the values look a bit better
-    for(let g of Object.values(gauges)) {
-        g.min = Number(g.min).toFixed(3)
-        g.max = Number(g.max).toFixed(3)
-        g.avg = Number(g.avg).toFixed(3)
-    }
-    console.log('-- totals --------------------')
-    console.log(inspect({ counters, gauges }, { depth: null, colors: true}))
+    ;[ measures, rates ].forEach(collection => {
+        for(let c of Object.values(collection)) {
+            for( let [k, v] of Object.entries(c)) {
+                c[k] = Number(v).toFixed(3)
+            }
+        }
+    })
+
+    return { counters, measures, rates }
 }
 
-// figure out what test to run
-if(phases[0].vu) {
-    unlode.runLoadTest({ phases, test }).then(summarise)
-} else {
-    unlode.runArrivalTest({ phases, test }).then(summarise)
-}
+let stats = await unlode.runTest({ phases, test })
+
+console.log('-- totals --------------------')
+console.log(inspect(summarise(stats), { depth: null, colors: true}))

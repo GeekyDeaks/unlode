@@ -21,5 +21,8 @@
   "devDependencies": {
     "tap": "^16.2.0"
   },
-  "type": "module"
+  "type": "module",
+  "dependencies": {
+    "tdigest": "^0.1.1"
+  }
 }
