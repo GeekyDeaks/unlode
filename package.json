@@ -13,6 +13,9 @@
   "scripts": {
     "test": "tap --no-coverage"
   },
+  "bin": {
+    "unlode": "./bin/unlode.js"
+  },
   "author": "sdeaks@gmail.com",
   "license": "ISC",
   "devDependencies": {
