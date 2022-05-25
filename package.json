@@ -1,6 +1,6 @@
 {
   "name": "unlode",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "no frills load testing",
   "directories": {
     "lib": "lib"
